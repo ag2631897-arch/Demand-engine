@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PULSE — Demand-First Commerce Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --white: #f5f0e8;
+    --orange: #ff4d00;
+    --orange-dim: #c43a00;
+    --yellow: #ffd60a;
+    --teal: #00c9a7;
+    --red: #ff2d55;
+    --card-bg: #111111;
+    --border: rgba(255,255,255,0.07);
+    --text-muted: rgba(245,240,232,0.45);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,77,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,77,0,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridPulse 8s ease-in-out infinite;
+  }
+
+  @keyframes gridPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,77,0,0.18) 0%, transparent 70%);
+    top: -200px; right: -200px;
+    animation: glowFloat 6s ease-in-out infinite;
+  }
+
+  .hero-glow-2 {
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,201,167,0.1) 0%, transparent 70%);
+    bottom: -100px; left: 10%;
+    animation: glowFloat 9s ease-in-out infinite reverse;
+  }
+
+  @keyframes glowFloat {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(20px, -30px) scale(1.05); }
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; width: 100%; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--orange);
+    border: 1px solid rgba(255,77,0,0.35);
+    padding: 6px 14px;
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+    animation: blink 1.5s ease infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.5rem, 9vw, 8.5rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+
+  .hero-title span.accent { color: var(--orange); }
+  .hero-title span.outline {
+    -webkit-text-stroke: 1.5px var(--white);
+    color: transparent;
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-weight: 300;
+    color: var(--text-muted);
+    max-width: 560px;
+    margin-bottom: 3rem;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  .hero-stats {
+    display: flex; gap: 3rem; flex-wrap: wrap;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  .stat { border-left: 2px solid var(--orange); padding-left: 1rem; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--yellow);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    animation: fadeUp 1s ease 1s both;
+  }
+
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--orange), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  @keyframes scrollPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 2rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 30px; height: 1px;
+    background: var(--orange);
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+  }
+
+  .section-desc {
+    color: var(--text-muted);
+    max-width: 540px;
+    margin-bottom: 3rem;
+    font-size: 1.05rem;
+    font-weight: 300;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 0 2rem;
+  }
+
+  /* ── CONCEPT SECTION ── */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .concept-cell {
+    background: var(--black);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .concept-cell:hover { background: #141414; }
+
+  .concept-cell::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--orange);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .concept-cell:hover::after { transform: scaleX(1); }
+
+  .concept-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .concept-cell h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .concept-cell p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .concept-cell.featured {
+    background: var(--orange);
+    color: var(--black);
+    grid-column: span 2;
+  }
+
+  .concept-cell.featured p { color: rgba(0,0,0,0.65); }
+  .concept-cell.featured::after { background: var(--black); }
+
+  .concept-cell.featured .concept-quote {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  /* ── VALUE PROP 3-SIDED ── */
+  .three-sided {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .side-card {
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .side-card:hover {
+    border-color: rgba(255,77,0,0.4);
+    transform: translateY(-4px);
+  }
+
+  .side-card-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--orange);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .side-card-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1;
+  }
+
+  .value-list { list-style: none; }
+  .value-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .value-list li::before {
+    content: '→';
+    color: var(--orange);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .side-card-value {
+    margin-top: 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--teal);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── REVENUE MODEL ── */
+  .revenue-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+
+  .revenue-item {
+    background: var(--card-bg);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: background 0.3s;
+    position: relative;
+  }
+
+  .revenue-item:hover { background: #161616; }
+
+  .rev-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  .rev-tag.primary { color: var(--yellow); border-color: var(--yellow); }
+  .rev-tag.secondary { color: var(--teal); border-color: var(--teal); }
+  .rev-tag.tertiary { color: var(--red); border-color: var(--red); }
+
+  .rev-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .rev-metric {
+    font-size: 2.2rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    color: var(--orange);
+    line-height: 1;
+  }
+
+  .rev-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── UNIT ECONOMICS ── */
+  .economics-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .order-breakdown {
+    border: 1px solid var(--border);
+    padding: 2rem;
+  }
+
+  .order-breakdown h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.85rem;
+  }
+
+  .order-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--yellow);
+    margin-bottom: 2rem;
+    letter-spacing: -0.03em;
+  }
+
+  .breakdown-bar {
+    margin-bottom: 1rem;
+  }
+
+  .breakdown-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+  }
+
+  .breakdown-label .name { color: var(--text-muted); }
+  .breakdown-label .val { font-family: 'Space Mono', monospace; color: var(--white); }
+
+  .bar-track {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1.5s ease;
+  }
+
+  .profit-box {
+    background: var(--orange);
+    color: var(--black);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .profit-label {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+  }
+
+  .profit-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+  }
+
+  .scale-box {
+    border: 1px solid var(--border);
+    padding: 2rem;
+  }
+
+  .scale-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .scale-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .scale-orders { color: var(--text-muted); font-size: 0.9rem; }
+
+  .scale-profit {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.1rem;
+    color: var(--teal);
+  }
+
+  /* ── FLYWHEEL ── */
+  .flywheel-section { text-align: center; }
+
+  .flywheel-ring {
+    position: relative;
+    width: min(600px, 90vw);
+    height: min(600px, 90vw);
+    margin: 0 auto 3rem;
+  }
+
+  .flywheel-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 160px; height: 160px;
+    background: var(--orange);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .flywheel-center-icon { font-size: 2.5rem; }
+  .flywheel-center-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--black);
+    text-align: center;
+    line-height: 1.2;
+    margin-top: 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .flywheel-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    animation: spin 20s linear infinite;
+  }
+
+  @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+  .flywheel-node {
+    position: absolute;
+    width: 110px;
+    text-align: center;
+    transform: translate(-50%, -50%);
+  }
+
+  .flywheel-node-icon {
+    width: 56px; height: 56px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 0.5rem;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .flywheel-node:hover .flywheel-node-icon {
+    border-color: var(--orange);
+    background: rgba(255,77,0,0.12);
+  }
+
+  .flywheel-node p {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ── AI MOAT ── */
+  .moat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .moat-card {
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+
+  .moat-card:hover { transform: translateY(-6px); }
+
+  .moat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+  }
+
+  .moat-card.dm::before { background: var(--orange); }
+  .moat-card.sm::before { background: var(--teal); }
+  .moat-card.pi::before { background: var(--yellow); }
+
+  .moat-icon { font-size: 2rem; margin-bottom: 1.25rem; }
+
+  .moat-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .moat-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .ai-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    background: rgba(255,77,0,0.12);
+    color: var(--orange);
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  /* ── PHASES ── */
+  .phases {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+  }
+
+  .phase {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s;
+  }
+
+  .phase:last-child { border-bottom: none; }
+  .phase:hover { background: #111; }
+
+  .phase-num {
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--orange);
+    border-right: 1px solid var(--border);
+    min-height: 120px;
+  }
+
+  .phase-content { padding: 2rem; }
+
+  .phase-content h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-content p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+  }
+
+  .phase-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .ptag {
+    font-size: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 2px;
+  }
+
+  /* ── RISKS ── */
+  .risks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .risk-card {
+    border: 1px solid rgba(255,45,85,0.2);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    background: rgba(255,45,85,0.03);
+  }
+
+  .risk-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .risk-icon { font-size: 1.5rem; }
+
+  .risk-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--red);
+  }
+
+  .risk-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .solution-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+
+  .solution-text {
+    font-size: 0.9rem;
+    color: var(--white);
+    line-height: 1.6;
+  }
+
+  /* ── MVP ── */
+  .mvp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .mvp-feature {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+
+  .mvp-feature:hover { border-color: rgba(255,77,0,0.4); }
+
+  .mvp-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: rgba(255,77,0,0.15);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .mvp-feature h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .mvp-feature p {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  /* ── FINAL CTA ── */
+  .final-section {
+    background: var(--orange);
+    color: var(--black);
+    padding: 6rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-section::before {
+    content: 'PULSE';
+    position: absolute;
+    font-family: 'Syne', sans-serif;
+    font-size: 30vw;
+    font-weight: 800;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.06;
+    letter-spacing: -0.05em;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .final-section h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .final-section p {
+    font-size: 1.15rem;
+    max-width: 500px;
+    margin: 0 auto 3rem;
+    opacity: 0.65;
+    position: relative;
+  }
+
+  .score-grid {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .score-item { text-align: center; }
+
+  .score-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--black);
+  }
+
+  .score-label {
+    font-size: 0.85rem;
+    opacity: 0.55;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .nav-logo span { color: var(--orange); }
+
+  .nav-links {
+    display: flex; gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  /* ── SOLUTIONS SECTION ── */
+  .solutions-hero {
+    background: linear-gradient(135deg, #0a0a0a 0%, #111 100%);
+    border: 1px solid var(--border);
+    padding: 4rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .solutions-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -10%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,201,167,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .solutions-hero h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .solutions-hero p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 600px;
+    line-height: 1.7;
+  }
+
+  .solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .sol-card {
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .sol-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0,201,167,0.3);
+  }
+
+  .sol-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--teal);
+  }
+
+  .sol-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--teal);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .sol-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .sol-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .three-sided,
+    .concept-grid,
+    .moat-grid,
+    .risks-grid,
+    .mvp-grid,
+    .economics-wrapper,
+    .solutions-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .concept-cell.featured { grid-column: span 1; }
+    .revenue-grid { grid-template-columns: 1fr; }
+
+    .nav-links { display: none; }
+
+    .flywheel-ring {
+      width: min(340px, 90vw);
+      height: min(340px, 90vw);
+    }
+
+    .flywheel-center {
+      width: 100px; height: 100px;
+    }
+
+    .flywheel-center-icon { font-size: 1.8rem; }
+    .flywheel-node { width: 80px; }
+    .flywheel-node p { font-size: 0.6rem; }
+    .flywheel-node-icon { width: 42px; height: 42px; font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">PUL<span>S</span>E</div>
+  <ul class="nav-links">
+    <li><a href="#concept">Concept</a></li>
+    <li><a href="#value">Value</a></li>
+    <li><a href="#revenue">Revenue</a></li>
+    <li><a href="#flywheel">Flywheel</a></li>
+    <li><a href="#ai">AI Moat</a></li>
+    <li><a href="#solutions">Solutions</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-content">
+    <div class="badge"><span class="badge-dot"></span>Demand-First Commerce Platform v2.0</div>
+    <h1 class="hero-title">
+      We don't<br>
+      <span class="outline">guess</span><br>
+      demand.<br>
+      We <span class="accent">own</span> it.
+    </h1>
+    <p class="hero-sub">PULSE is the world's first Demand Intelligence + Fulfillment Platform. We capture intent before supply exists — making every competitor's inventory model obsolete.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">3×</div>
+        <div class="stat-label">Market Sides</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">₹25</div>
+        <div class="stat-label">Profit / Order</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Revenue Streams</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Flywheel Loops</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    SCROLL
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CORE CONCEPT -->
+<section id="concept">
+  <div class="container">
+    <div class="section-label">01 — Core Concept</div>
+    <h2 class="section-title">Not a grocery app.<br>A demand intelligence engine.</h2>
+    <p class="section-desc">PULSE reimagines commerce from the ground up — starting with what people want, not what warehouses carry.</p>
+
+    <div class="concept-grid">
+      <div class="concept-cell featured">
+        <div class="concept-quote">"We don't guess demand. We capture it before supply exists."</div>
+        <p style="margin-top:1rem;">This is the fundamental shift that makes every competitor's model look like guesswork. Blinkit predicts. Zepto stockpiles. PULSE knows.</p>
+      </div>
+      <div class="concept-cell">
+        <div class="concept-icon">🏪</div>
+        <h3>Traditional Commerce</h3>
+        <p>Buy inventory → hope demand follows → discount unsold stock → repeat. Wasteful, risky, capital-intensive. Margins get crushed by guesswork.</p>
+      </div>
+      <div class="concept-cell">
+        <div class="concept-icon">🔥</div>
+        <h3>The PULSE Model</h3>
+        <p>Capture demand signals → aggregate intent → match with suppliers → fulfill with zero-waste. Capital is deployed only where demand is confirmed.</p>
+      </div>
+      <div class="concept-cell">
+        <div class="concept-icon">📊</div>
+        <h3>The Data Moat</h3>
+        <p>Every request, every upvote, every pre-order is a data point. PULSE builds a live Demand Graph that becomes exponentially more valuable over time — impossible to replicate.</p>
+      </div>
+      <div class="concept-cell">
+        <div class="concept-icon">🚀</div>
+        <h3>Upgraded Positioning</h3>
+        <p>PULSE is not quick commerce. It's the intelligence layer that sits above all commerce — a platform that knows what the market wants 48 hours before the market does.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VALUE PROP -->
+<section id="value">
+  <div class="container">
+    <div class="section-label">02 — Value Proposition</div>
+    <h2 class="section-title">Three sides.<br>One flywheel.</h2>
+    <p class="section-desc">PULSE creates compounding value for users, sellers, and the platform simultaneously — a true three-sided market.</p>
+
+    <div class="three-sided">
+      <div class="side-card">
+        <div class="side-card-num">01 / 03</div>
+        <div class="side-card-role">👤 Users</div>
+        <ul class="value-list">
+          <li>Request any product instantly</li>
+          <li>Pre-order items not yet available</li>
+          <li>Earn real rewards for identifying demand</li>
+          <li>Access exclusive products before anyone</li>
+          <li>Group-buy to unlock volume discounts</li>
+          <li>Gamified leaderboards + weekly payouts</li>
+        </ul>
+        <div class="side-card-value">💡 Value: Power + Earnings + Exclusivity</div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-num">02 / 03</div>
+        <div class="side-card-role">🏪 Sellers</div>
+        <ul class="value-list">
+          <li>See real-time, hyperlocal demand signals</li>
+          <li>Sell with guaranteed buyers (pre-orders)</li>
+          <li>Eliminate dead inventory risk entirely</li>
+          <li>AI-powered "Stock This" recommendations</li>
+          <li>Demand Boost: pay to win high-intent slots</li>
+          <li>Category performance benchmarking</li>
+        </ul>
+        <div class="side-card-value">💡 Value: Zero guesswork + higher conversion</div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-num">03 / 03</div>
+        <div class="side-card-role">🧠 Platform</div>
+        <ul class="value-list">
+          <li>Own the demand data layer</li>
+          <li>Control supply-demand matching</li>
+          <li>Monetize both buyer and seller sides</li>
+          <li>License demand insights to brands</li>
+          <li>Build predictive commerce intelligence</li>
+          <li>Future: B2B demand API for enterprises</li>
+        </ul>
+        <div class="side-card-value">💡 Value: Data monopoly + structural advantage</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- REVENUE -->
+<section id="revenue">
+  <div class="container">
+    <div class="section-label">03 — Revenue Model</div>
+    <h2 class="section-title">Six streams.<br>All compounding.</h2>
+    <p class="section-desc">Multi-layered monetization that grows in value as the network scales. No single point of revenue failure.</p>
+
+    <div class="revenue-grid">
+      <div class="revenue-item">
+        <span class="rev-tag primary">Primary</span>
+        <div class="rev-title">Seller Commission</div>
+        <div class="rev-metric">10–25%</div>
+        <div class="rev-desc">Dynamic per-order commission based on category, volume, and seller tier. Higher for premium categories like electronics and health.</div>
+      </div>
+
+      <div class="revenue-item">
+        <span class="rev-tag secondary">High Margin</span>
+        <div class="rev-title">Demand Boost Fee</div>
+        <div class="rev-metric">Intent Ads</div>
+        <div class="rev-desc">Sellers pay to prioritize listings in "requested items." This is not traditional advertising — it's intent-based placement at the highest purchase probability moment.</div>
+      </div>
+
+      <div class="revenue-item">
+        <span class="rev-tag tertiary">Commitment</span>
+        <div class="rev-title">Pre-Order Lock-in Fee</div>
+        <div class="rev-metric">2–5%</div>
+        <div class="rev-desc">Small platform fee on every pre-order ensures buyer commitment, funds the float between demand capture and fulfillment, and reduces cancellation rates.</div>
+      </div>
+
+      <div class="revenue-item">
+        <span class="rev-tag secondary">B2B</span>
+        <div class="rev-title">Sponsored Demand</div>
+        <div class="rev-metric">Brand Layer</div>
+        <div class="rev-desc">Brands pay PULSE to run controlled demand tests — essentially paying to discover real market appetite before launching products. Market research reimagined.</div>
+      </div>
+
+      <div class="revenue-item">
+        <span class="rev-tag primary">Recurring</span>
+        <div class="rev-title">Pro User Subscription</div>
+        <div class="rev-metric">₹99–499/mo</div>
+        <div class="rev-desc">Higher reward percentages, early access to trending products, priority fulfillment, and exclusive drops. Turns power users into loyal paying subscribers.</div>
+      </div>
+
+      <div class="revenue-item">
+        <span class="rev-tag secondary">Future</span>
+        <div class="rev-title">Demand Intelligence API</div>
+        <div class="rev-metric">Enterprise</div>
+        <div class="rev-desc">License anonymized, aggregated demand data to retailers, FMCG brands, and supply chain companies. The Bloomberg Terminal of consumer intent data.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- UNIT ECONOMICS -->
+<section>
+  <div class="container">
+    <div class="section-label">04 — Unit Economics</div>
+    <h2 class="section-title">Per order.<br>Then scale.</h2>
+    <p class="section-desc">The numbers that matter at the unit level — and what happens when you multiply by millions.</p>
+
+    <div class="economics-wrapper">
+      <div class="order-breakdown">
+        <h3>Example Order</h3>
+        <div class="order-val">₹500</div>
+
+        <div class="breakdown-bar">
+          <div class="breakdown-label"><span class="name">Seller Margin</span><span class="val">₹150</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:30%; background:#444;"></div></div>
+        </div>
+        <div class="breakdown-bar">
+          <div class="breakdown-label"><span class="name">Platform Commission</span><span class="val">₹75</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:15%; background: var(--orange);"></div></div>
+        </div>
+        <div class="breakdown-bar">
+          <div class="breakdown-label"><span class="name">Logistics</span><span class="val">₹40</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:8%; background:#555;"></div></div>
+        </div>
+        <div class="breakdown-bar">
+          <div class="breakdown-label"><span class="name">User Reward (capped)</span><span class="val">₹10–20</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:4%; background: var(--yellow);"></div></div>
+        </div>
+
+        <div class="profit-box">
+          <span class="profit-label">PLATFORM PROFIT</span>
+          <span class="profit-val">₹15–25</span>
+        </div>
+      </div>
+
+      <div class="scale-box">
+        <div class="scale-title">Now multiply.</div>
+        <div class="scale-row">
+          <span class="scale-orders">10,000 orders/day</span>
+          <span class="scale-profit">₹1.5L–2.5L/day</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-orders">100,000 orders/day</span>
+          <span class="scale-profit">₹15L–25L/day</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-orders">1M orders/day</span>
+          <span class="scale-profit">₹1.5Cr–2.5Cr/day</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-orders">+ Demand Boost fees</span>
+          <span class="scale-profit" style="color:var(--yellow);">+40% uplift</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-orders">+ Pro subscriptions</span>
+          <span class="scale-profit" style="color:var(--yellow);">+₹X recurring</span>
+        </div>
+        <div class="scale-row" style="border-bottom:none;">
+          <span class="scale-orders">+ Data API licensing</span>
+          <span class="scale-profit" style="color: var(--orange);">High-margin B2B</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FLYWHEEL -->
+<section id="flywheel" class="flywheel-section">
+  <div class="container">
+    <div class="section-label" style="justify-content:center;">05 — The Flywheel</div>
+    <h2 class="section-title">Self-reinforcing.<br>Impossible to stop.</h2>
+    <p class="section-desc" style="margin: 0 auto 3rem;">Once the loop is spinning, every turn makes the next turn faster. This is how PULSE becomes structurally unbeatable.</p>
+
+    <div class="flywheel-ring">
+      <svg class="flywheel-svg" viewBox="0 0 600 600">
+        <circle cx="300" cy="300" r="220" fill="none" stroke="rgba(255,77,0,0.12)" stroke-width="1" stroke-dasharray="8 8"/>
+        <circle cx="300" cy="300" r="180" fill="none" stroke="rgba(255,77,0,0.06)" stroke-width="1"/>
+        <!-- Arrows -->
+        <path d="M 300 80 A 220 220 0 0 1 520 300" fill="none" stroke="rgba(255,77,0,0.5)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <path d="M 520 300 A 220 220 0 0 1 300 520" fill="none" stroke="rgba(255,77,0,0.5)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <path d="M 300 520 A 220 220 0 0 1 80 300" fill="none" stroke="rgba(255,77,0,0.5)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <path d="M 80 300 A 220 220 0 0 1 300 80" fill="none" stroke="rgba(255,77,0,0.5)" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="rgba(255,77,0,0.7)"/>
+          </marker>
+        </defs>
+      </svg>
+
+      <!-- Nodes positioned at cardinal points -->
+      <div class="flywheel-node" style="top:10%; left:50%;">
+        <div class="flywheel-node-icon">📱</div>
+        <p>Users request products</p>
+      </div>
+      <div class="flywheel-node" style="top:50%; left:92%;">
+        <div class="flywheel-node-icon">📊</div>
+        <p>Demand becomes visible</p>
+      </div>
+      <div class="flywheel-node" style="top:90%; left:50%;">
+        <div class="flywheel-node-icon">🏪</div>
+        <p>Sellers fulfill demand</p>
+      </div>
+      <div class="flywheel-node" style="top:50%; left:8%;">
+        <div class="flywheel-node-icon">💰</div>
+        <p>Users earn & invite more</p>
+      </div>
+
+      <div class="flywheel-center">
+        <div class="flywheel-center-icon">⚡</div>
+        <div class="flywheel-center-text">PULSE<br>ENGINE</div>
+      </div>
+    </div>
+
+    <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 500px; margin: 0 auto;">More users → more demand data → better seller matching → higher fill rates → more user rewards → more users. The loop accelerates with every cycle.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- AI MOAT -->
+<section id="ai">
+  <div class="container">
+    <div class="section-label">06 — AI + Data Moat</div>
+    <h2 class="section-title">Your biggest<br>weapon.</h2>
+    <p class="section-desc">Three proprietary AI systems that competitors can't replicate without years of demand data — which only PULSE has.</p>
+
+    <div class="moat-grid">
+      <div class="moat-card dm">
+        <div class="moat-icon">🔍</div>
+        <h3>Demand Graph</h3>
+        <p>A live, hyperlocal map of what people want, when they want it, and how demand is accelerating or declining. Updated in real-time from every request, upvote, and pre-order signal.</p>
+        <p><strong style="color:var(--white);">Upgraded:</strong> Sentiment layer analyzes language patterns in requests to detect emerging needs 2–3 weeks before they become mainstream search trends.</p>
+        <span class="ai-tag">REAL-TIME ML</span>
+      </div>
+
+      <div class="moat-card sm">
+        <div class="moat-icon">🤖</div>
+        <h3>Smart Matching Engine</h3>
+        <p>Automatically pairs demand signals with the optimal seller — factoring in proximity, pricing history, fill rate, and conversion probability. No manual listing needed.</p>
+        <p><strong style="color:var(--white);">Upgraded:</strong> Dynamic pricing engine suggests optimal price points to maximize both seller margin and buyer conversion simultaneously.</p>
+        <span class="ai-tag">GRAPH NEURAL NET</span>
+      </div>
+
+      <div class="moat-card pi">
+        <div class="moat-icon">📈</div>
+        <h3>Predictive Inventory</h3>
+        <p>Tells sellers "List this item now — 87% probability of sale in 48 hours." Converts passive kirana stores into data-driven micro-fulfillment centers.</p>
+        <p><strong style="color:var(--white);">Upgraded:</strong> Cross-category demand correlation — buying baby formula predicts diaper demand, enabling bundle suggestions that drive AOV up 35%.</p>
+        <span class="ai-tag">TIME-SERIES FORECAST</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PHASES -->
+<section>
+  <div class="container">
+    <div class="section-label">07 — Supply Chain Strategy</div>
+    <h2 class="section-title">Three phases.<br>One direction.</h2>
+    <p class="section-desc">Phased supply strategy that matches infrastructure investment to proven demand density.</p>
+
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-num">1</div>
+        <div class="phase-content">
+          <h3>Hyperlocal Sellers — The Kirana Network</h3>
+          <p>Onboard existing kirana stores and local merchants as the fulfillment layer. They carry inventory; PULSE sends them guaranteed orders. Zero capex, maximum speed to market. Launch in 2–3 dense urban areas.</p>
+          <div class="phase-tags">
+            <span class="ptag">CITY-LEVEL LAUNCH</span>
+            <span class="ptag">ZERO INVENTORY RISK</span>
+            <span class="ptag">PROOF OF CONCEPT</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num">2</div>
+        <div class="phase-content">
+          <h3>Dark Stores — The Demand-Proven Zones</h3>
+          <p>Once the Demand Graph identifies consistently high-demand zones, establish micro-fulfillment dark stores ONLY in those locations. Unlike Blinkit, every dark store is justified by real data — not a gamble.</p>
+          <div class="phase-tags">
+            <span class="ptag">DATA-JUSTIFIED CAPEX</span>
+            <span class="ptag">10-MINUTE DELIVERY</span>
+            <span class="ptag">CATEGORY EXPANSION</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num">3</div>
+        <div class="phase-content">
+          <h3>Hybrid Intelligence Model</h3>
+          <p>High-frequency items stored locally. Low-frequency, niche items sourced on-demand. The AI continuously rebalances what's stored vs. sourced based on live demand velocity. Result: 40% lower wastage than pure dark-store models.</p>
+          <div class="phase-tags">
+            <span class="ptag">AI-OPTIMIZED SPLIT</span>
+            <span class="ptag">MARKET EXPANSION</span>
+            <span class="ptag">MARGIN PROTECTION</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num">4</div>
+        <div class="phase-content">
+          <h3>Platform Layer — The Intelligence Business</h3>
+          <p>PULSE evolves beyond fulfillment into the intelligence layer above all commerce. License the Demand Graph to D2C brands, FMCG companies, and retail chains. Become the data infrastructure of Indian commerce.</p>
+          <div class="phase-tags">
+            <span class="ptag">B2B DATA LICENSING</span>
+            <span class="ptag">ENTERPRISE APIS</span>
+            <span class="ptag">CATEGORY EXPANSION</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RISKS -->
+<section>
+  <div class="container">
+    <div class="section-label">08 — Risks + Mitigation</div>
+    <h2 class="section-title">Every risk.<br>Already solved.</h2>
+    <p class="section-desc">We've stress-tested the model. For every critical failure point, PULSE has a structural solution baked in.</p>
+
+    <div class="risks-grid">
+      <div class="risk-card">
+        <div class="risk-header">
+          <div class="risk-icon">⚠️</div>
+          <h3>Fake Demand / Spam</h3>
+        </div>
+        <p>Users gaming the rewards system by creating artificial demand signals, poisoning the Demand Graph.</p>
+        <div class="solution-label">Solution</div>
+        <div class="solution-text">AI anomaly detection on request patterns. Minimum engagement threshold before rewards unlock. Verified user tiers with progressive trust scores. Social graph validation (requests from connected users weighted higher).</div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-header">
+          <div class="risk-icon">🚚</div>
+          <h3>Logistics Failure</h3>
+        </div>
+        <p>Delivery quality degradation at scale damages user trust and brand reputation beyond recovery.</p>
+        <div class="solution-label">Solution</div>
+        <div class="solution-text">City-level launch keeps logistics controllable. Third-party delivery partners (Dunzo/Shadowfax/Porter API) with real-time SLA monitoring. Quality score tied to seller Demand Boost eligibility — bad fulfillment = no priority placement.</div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-header">
+          <div class="risk-icon">📉</div>
+          <h3>Margin Collapse</h3>
+        </div>
+        <p>User reward costs escalating faster than revenue, squeezing platform margin to zero.</p>
+        <div class="solution-label">Solution</div>
+        <div class="solution-text">Rewards are credits, not cash — redeemable on the platform, which recirculates value. Dynamic reward caps that tighten automatically as order volume grows. Commission rates tied to category margins, not flat rates.</div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-header">
+          <div class="risk-icon">🦁</div>
+          <h3>Big Player Copycat</h3>
+        </div>
+        <p>Blinkit, Zepto, or Swiggy Instamart launching a "request" feature that mimics PULSE's core mechanic.</p>
+        <div class="solution-label">Solution</div>
+        <div class="solution-text">The demand data itself is the moat — not the feature. A copycat launching today has zero historical demand data, zero trained models, and zero seller trust. PULSE's Demand Graph becomes more accurate and valuable with every passing month. Data leads compound exponentially.</div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-header">
+          <div class="risk-icon">🧲</div>
+          <h3>Cold Start Problem</h3>
+        </div>
+        <p>Need both users requesting AND sellers listing to make the platform valuable — classic chicken-and-egg.</p>
+        <div class="solution-label">Solution</div>
+        <div class="solution-text">Launch demand-side first in college campuses — high engagement, low logistics cost, concentrated geography. Even 500 requests/day from one campus is a compelling data product to show sellers. Seed seller side with 10–15 anchor merchants before opening broadly.</div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-header">
+          <div class="risk-icon">⚖️</div>
+          <h3>Regulatory Risk</h3>
+        </div>
+        <p>Consumer protection laws around pre-orders, rewards programs, and data usage evolving rapidly in India.</p>
+        <div class="solution-label">Solution</div>
+        <div class="solution-text">Pre-orders are clearly disclosed as non-guaranteed estimates. Rewards are platform credits, not financial instruments. Data anonymized before any B2B licensing. Legal review built into Phase 2 before any enterprise data deals are signed.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SOLUTIONS — what we recommend building -->
+<section id="solutions">
+  <div class="container">
+    <div class="section-label">09 — Strategic Solutions</div>
+
+    <div class="solutions-hero">
+      <h2>The complete solution to making PULSE unstoppable.</h2>
+      <p>Beyond the business model — here are the specific strategic, technical, and operational moves that turn PULSE from a great idea into a generational company.</p>
+    </div>
+
+    <div class="solutions-grid">
+      <div class="sol-card">
+        <div class="sol-num">SOLUTION 01</div>
+        <h3>Build the Trust Layer First</h3>
+        <p>The single biggest risk to PULSE is demand signal integrity. Before scaling, invest in a robust trust scoring system: verified phone + Aadhaar-lite onboarding, request credibility scoring based on historical behavior, and a "Verified Requester" badge that users earn and value. Make trust a status symbol.</p>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-num">SOLUTION 02</div>
+        <h3>Solve the Pre-Order Experience</h3>
+        <p>Pre-orders fail when users feel abandoned between order and delivery. Build a live "demand tracker" — show users how many others want the same item, when it'll be sourced, and give real-time ETAs. Turn waiting into an exciting social experience, not an anxiety-inducing one.</p>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-num">SOLUTION 03</div>
+        <h3>The Seller Intelligence Dashboard</h3>
+        <p>Make sellers addicted to the data. Build a free dashboard showing them: "7 people in your area requested X in the last 24 hours." Even before they sell anything on PULSE, they're getting value from the Demand Graph — and becoming dependent on it. Lock-in before monetization.</p>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-num">SOLUTION 04</div>
+        <h3>Campus-First Go-to-Market</h3>
+        <p>College campuses are perfect launch environments: high density, high smartphone penetration, strong peer-to-peer virality, tolerance for new apps, and low logistics complexity. Partner with 3 campus stores as anchor sellers. Run a "Most Wanted" leaderboard of requested items — pure virality.</p>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-num">SOLUTION 05</div>
+        <h3>Make Rewards Social, Not Just Monetary</h3>
+        <p>Monetary rewards attract gamers. Social rewards build community. Add: "You were the 1st to request X — it's now available!" notifications. Feature top requesters on the app's discovery page. Create "Trend Setter" profiles. The identity value of being an early identifier is more sticky than cash.</p>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-num">SOLUTION 06</div>
+        <h3>The Sponsored Demand Ethical Framework</h3>
+        <p>Sponsored Demand (brands planting artificial signals) is powerful but dangerous if misused. Solution: complete transparency. Label sponsored demand clearly. Cap it at 15% of any category's signal pool. Run A/B tests to show brands real organic vs. sponsored conversion rates. Turn ethics into a product feature.</p>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-num">SOLUTION 07</div>
+        <h3>The Aggregation Play — Group Demand</h3>
+        <p>When 50+ users request the same item in the same area, trigger a "Group Buy" — negotiated bulk pricing from suppliers. Users get a discount, sellers get volume, PULSE gets a premium commission and a viral moment. This is Groupon with real-time intelligence — a self-generating marketing machine.</p>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-num">SOLUTION 08</div>
+        <h3>Phase 1 Tech Stack — Keep It Lean</h3>
+        <p>MVP must be 3 screens: Request, Browse, Wallet. No AI, no complexity. Backend: Firebase or Supabase for speed. Payments: Razorpay. Delivery: Shiprocket/Dunzo API. The only custom-built piece is the upvote aggregation and seller notification system. Everything else is off-the-shelf until you hit ₹50L GMV.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MVP -->
+<section>
+  <div class="container">
+    <div class="section-label">10 — MVP Blueprint</div>
+    <h2 class="section-title">What to build<br>first. Exactly.</h2>
+    <p class="section-desc">Ruthlessly scoped. No AI, no complexity. Ship in 6 weeks. Validate everything.</p>
+
+    <div class="mvp-grid">
+      <div class="mvp-feature">
+        <div class="mvp-num">01</div>
+        <div>
+          <h4>Product Request Feature</h4>
+          <p>Any user can request any product. Simple text input + photo upload + location auto-detect. This is your data collection engine disguised as a consumer feature.</p>
+        </div>
+      </div>
+
+      <div class="mvp-feature">
+        <div class="mvp-num">02</div>
+        <div>
+          <h4>Upvote + Discovery System</h4>
+          <p>All requests are public. Users upvote what they also want. Trending requests surface on the home screen. This creates social validation loops with zero extra effort.</p>
+        </div>
+      </div>
+
+      <div class="mvp-feature">
+        <div class="mvp-num">03</div>
+        <div>
+          <h4>Seller Dashboard (V1)</h4>
+          <p>Simple view: top 20 requested items near their location. One-click to list. Order notification via WhatsApp. No complex onboarding — get sellers earning in under 10 minutes.</p>
+        </div>
+      </div>
+
+      <div class="mvp-feature">
+        <div class="mvp-num">04</div>
+        <div>
+          <h4>Credit Wallet (Not Cash)</h4>
+          <p>Users earn platform credits for requests that get fulfilled. Redeemable on next order. Starts the habit loop. Credits = lower churn than cash rewards at a fraction of the cost.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final-section">
+  <div class="container">
+    <h2>Not competing.<br>Redefining.</h2>
+    <p>PULSE doesn't enter the quick commerce race. It changes what the race is about. From speed of delivery to intelligence of supply.</p>
+
+    <div class="score-grid">
+      <div class="score-item">
+        <div class="score-num">10</div>
+        <div class="score-label">Innovation</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num">10</div>
+        <div class="score-label">Execution Path</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num">10</div>
+        <div class="score-label">Moat Depth</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num">∞</div>
+        <div class="score-label">Ceiling</div>
+      </div>
+    </div>
+
+    <p style="margin-top:3rem; opacity: 0.5; font-family:'Space Mono',monospace; font-size:0.75rem; letter-spacing:0.1em;">PULSE — DEMAND-FIRST COMMERCE PLATFORM — v2.0</p>
+  </div>
+</section>
+
+</body>
+</html>
